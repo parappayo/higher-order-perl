@@ -58,3 +58,28 @@ sub hanoi_print {
 		print("move disk $n from $start to $end\n");
 	});
 }
+
+sub dir_walk {
+	my ($root, $func) = @_;
+
+	$func->($root);
+
+	if (!(-d $root)) {
+		return;
+	}
+
+	my $dir;
+	my $file;
+
+	unless (opendir $dir, $root) {
+		warn "Failed to open dir $root: $!\n";
+		return;
+	}
+
+	while ($file = readdir $dir) {
+		next if $file eq '.' || $file eq '..' || -l $file;
+		dir_walk("$root/$file", $func);
+	}
+}
+
+# dir_walk('.', sub { printf "%6d %s\n", -s $_[0], $_[0] });
