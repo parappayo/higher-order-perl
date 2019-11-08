@@ -83,3 +83,18 @@ sub dir_walk {
 }
 
 # dir_walk('.', sub { printf "%6d %s\n", -s $_[0], $_[0] });
+
+sub find_share {
+	my ($target, $values) = @_;
+	return [] if $target == 0;
+	return if $target < 0 || @$values == 0;
+
+	my ($first, @rest) = @$values;
+	my $solution = find_share($target - $first, \@rest);
+
+	return $solution ?
+		[$first, @$solution] :
+		find_share($target, \@rest);
+}
+
+# my $result = find_share(5, [1, 2, 4, 8]); print "@$result\n";
